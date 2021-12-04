@@ -1,20 +1,37 @@
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    fun part1(input: Int): Int {
+        return input
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part2(input: List<Int>): Int {
+        var increaseCounter = 0
+        val sums = getSumList(input)
+        sums.forEachIndexed { index, depth ->
+            if (index > 0) {
+                if (depth > sums[index - 1]) {
+                    increaseCounter++
+                }
+            }
+        }
+        return increaseCounter
     }
+
 
     // test if implementation meets criteria from the description, like:
-//    val testInput = readInput("Day01_test")
-//    check(part1(testInput) == 1)
+    //  val testInput = readInput("Day01_test")
+    //    check(part1(testInput) == 1)
 
     val input = readInput("Day01")
-    println(depthChecker(input))
-//    println(part1(input))
-//    println(part2(input))
+    println(part1(depthChecker(input)))
+    println(part2(input.map { it.toInt() }))
+}
+
+fun getSumList(input: List<Int>): List<Int> {
+    val sum: MutableList<Int> = mutableListOf()
+    for (depths in 0 until input.size - 2) {
+        sum.add(input[depths] + input[depths + 1] + input[depths + 2])
+    }
+    return sum
 }
 
 fun depthChecker(input: List<String>): Int {
@@ -26,25 +43,14 @@ fun depthChecker(input: List<String>): Int {
         } else {
             input[index]
         }
-
         if (hasIncreased(previous, depth)) {
             increaseCounter++
-        } else {
-            println("hold up:$previous is higher than $depth.")
         }
     }
     return increaseCounter
 }
 
-
 fun hasIncreased(previous: String, currentMeasurement: String): Boolean {
     return (previous.toInt() < currentMeasurement.toInt())
 }
-/**
- * signal strenght 0-50 stars
- * sonar sweep report(puzzle input)
- *  how quickly the depth increases
- *  count the number of time the depth increase from previous measurement
- *  no measurement before the first measurement
- *
- */
+
